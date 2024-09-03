@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Profile</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="main-w3layouts wrapper">
+        <h1>Update Profile</h1>
+        <div class="main-agileinfo">
+            <div class="agileits-top">
+                <form action="{% url 'update_profile' %}" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Update">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

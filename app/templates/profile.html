@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+    <div class="profile-container">
+        <h1 class="profile-header">Profile</h1>
+        <div class="profile-info">
+            <p><span>Username:</span> {{ user.username }}</p>
+            <p><span>Email:</span> {{ user.email }}</p>
+        </div>
+        <div class="profile-actions">
+            <a href="{% url 'update_profile' %}">
+                <button>Edit Profile</button>
+            </a>
+            <a href="{% url 'delete_profile' %}" onclick="return confirm('Are you sure?');">
+                <button class="delete-button">Delete Account</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

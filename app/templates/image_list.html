@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f9f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c7c2c;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: inline-block;
+            margin: 10px;
+            border: 2px solid #2c7c2c;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        li:hover {
+            border-color: #45a045;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            img {
+                width: 100%;
+                height: auto;
+            }
+
+            li {
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Images</h1>
+    <ul>
+        {% for image in images %}
+            <li><img src="{{ image.file.url }}" alt="Image"></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
