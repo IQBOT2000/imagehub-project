@@ -10,6 +10,7 @@
 <body>
     <div class="container">
         <h1>Categories</h1>
+        <h1>{{ username }}</h1>
         <ul class="category-list">
             {% for category in categories %}
                 <li class="category-item"><a href="{% url 'image_list' name=category.name %}">{{ category.name }}</a></li>

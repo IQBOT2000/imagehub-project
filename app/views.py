@@ -33,6 +33,7 @@ class ImageViewSet(viewsets.ModelViewSet):
 
 def category_list(request):
     categories = Category.objects.all()
+    username = ['signup' if User.username == 'http://127.0.0.1:8000/categories/' else User.username]
     return render(request, 'category_list.html', {'categories': categories})
 
 
@@ -157,3 +158,5 @@ def delete_image(request, pk):
         image.delete()
         return redirect('image_list')
     return render(request, 'delete_image.html', {'image': image})
+
+
