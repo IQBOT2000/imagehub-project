@@ -4,11 +4,12 @@ from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
 
-from .forms import UpdateProfileForm
+from .forms import ImageUpdateForm
 from .models import Category
 from .models import Image
 from .serializers import CategorySerializer
@@ -63,7 +64,7 @@ def signup(request):
             user.save()
             login(request, user)
             messages.success(request, "Registration successful.")
-            return redirect('catigories')
+            return redirect('categories')
         except:
             messages.error(request, "An error occurred. Please try again.")
             return render(request, 'signup.html')
@@ -73,23 +74,16 @@ def signup(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST['username']
+        password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-
         if user is not None:
             login(request, user)
-            return redirect('catigories')
+            return redirect('categories')
         else:
-            messages.error(request, "Invalid username or password.")
-            return render(request, 'login.html')
-
-    return render(request, 'login.html')
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+            return HttpResponse('Invalid login details.')
+    else:
+        return render(request, 'login.html')
 
 
 @login_required
@@ -119,11 +113,6 @@ def delete_profile(request):
     return redirect('signup')
 
 
-def create_image(request):
-    image = Image.objects.all()
-    return render(request, 'create_image.html', {'images': images})
-
-
 @login_required
 def upload_image(request):
     if request.method == 'POST':
@@ -139,24 +128,65 @@ def upload_image(request):
 
 
 @login_required
-def update_image(request, pk):
-    image = get_object_or_404(Image, pk=pk, user=request.user)
+def my_images(request):
+    images = Image.objects.filter(user=request.user, delete=False)
+
     if request.method == 'POST':
-        form = ImageUploadForm(request.POST, request.FILES, instance=image)
+        form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('image_list')
+            image = form.save(commit=False)
+            image.user = request.user
+            image.save()
+            return redirect('my_images')
     else:
-        form = ImageUploadForm(instance=image)
-    return render(request, 'upload_image.html', {'form': form})
+        form = ImageForm()
+
+    return render(request, 'my_images.html', {'images': images, 'form': form})
 
 
 @login_required
-def delete_image(request, pk):
-    image = get_object_or_404(Image, pk=pk, user=request.user)
+def update_image(request, image_id):
+    image = get_object_or_404(Image, id=image_id, user=request.user)
     if request.method == 'POST':
-        image.delete()
-        return redirect('image_list')
-    return render(request, 'delete_image.html', {'image': image})
+        form = ImageUpdateForm(request.POST, instance=image)
+        if form.is_valid():
+            form.save()
+            return redirect('my_images')
+    else:
+        form = ImageUpdateForm(instance=image)
+
+    return render(request, 'update_image.html', {'form': form, 'image': image})
 
 
+@login_required
+def delete_image(request, image_id):
+    image = get_object_or_404(Image, id=image_id, user=request.user)
+    image.delete = True
+    image.deleted_at = timezone.now()
+    image.save()
+    return redirect('my_images')
+
+
+def image_detail(request, name, id):
+    image = get_object_or_404(Image, id=id)
+    return render(request, 'app/image_detail.html', {'image': image})
+
+from rest_framework import serializers
+from .models import Product, Rating, Comment
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description']
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ['id', 'product', 'score', 'review']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'product', 'text']

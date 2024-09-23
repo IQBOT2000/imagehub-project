@@ -8,12 +8,21 @@
     <link rel="stylesheet" href="{% static 'css/cat_style.css' %}">
 </head>
 <body>
+    <div class="auth-links">
+        {% if user.is_authenticated %}
+            <span><a href="{% url 'profile' %}">Hello, {{ user.username }}!</a></span>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'signup' %}">Sign Up</a>
+        {% endif %}
+    </div>
     <div class="container">
         <h1>Categories</h1>
-        <h1>{{ username }}</h1>
         <ul class="category-list">
             {% for category in categories %}
-                <li class="category-item"><a href="{% url 'image_list' name=category.name %}">{{ category.name }}</a></li>
+            <li class="category-item">
+                <a href="{% url 'image_list' name=category.name %}">{{ category.name }}</a>
+            </li>
             {% endfor %}
         </ul>
     </div>

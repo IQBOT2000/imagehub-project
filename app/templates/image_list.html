@@ -14,9 +14,31 @@
             text-align: center;
         }
 
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .my-images-button {
+            background-color: #2c7c2c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .my-images-button:hover {
+            background-color: #45a045;
+        }
+
         h1 {
             color: #2c7c2c;
-            margin-bottom: 20px;
+            margin: 0;
             font-size: 2.5em;
         }
 
@@ -60,12 +82,19 @@
     </style>
 </head>
 <body>
-    <h1>Images</h1>
+    <header>
+        <h1>Images</h1>
+        <a href="{% url 'my_images' %}" class="my-images-button">My Images</a>
+    </header>
+
     <ul>
         {% for image in images %}
-            <li><img src="{{ image.file.url }}" alt="Image"></li>
+        <li>
+            <a href="{% url 'image_detail' name=image.category.name id=image.id %}">
+                <img src="{{ image.file.url }}" alt="Image">
+            </a>
+        </li>
         {% endfor %}
     </ul>
 </body>
 </html>
-
